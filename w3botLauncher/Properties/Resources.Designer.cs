@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace w3bot.Properties
+namespace w3botLauncher.Properties
 {
 
 
