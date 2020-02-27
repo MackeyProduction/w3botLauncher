@@ -3,12 +3,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Threading;
-using w3botLauncher.Service;
 using w3botLauncher.Utils;
 
-namespace w3bot.Command
+namespace w3botLauncher.Command
 {
-    public class DownloadTesseractFilesCommand : AbstractHttpClient, ICommand
+    public class DownloadTesseractFilesCommand : AbstractHttpClient, IFileCommand
     {
         public DownloadTesseractFilesCommand(WebClient webClient, FileProcess fileProcess) : base(webClient, fileProcess)
         {
@@ -21,10 +20,6 @@ namespace w3bot.Command
             get
             {
                 return FileProcess;
-            }
-            set
-            {
-                Process = value;
             }
         }
 
@@ -40,12 +35,11 @@ namespace w3bot.Command
             {
                 Status = "Downloading tessdata files...";
 
-                Download(FILE_PATH, FILE_NAME);
+                Download(FILE_NAME);
 
-                if (Running)
-                    IsRunning = Running;
+                IsRunning = Running;
 
-                if (IsFinished || FileExists(FILE_PATH, FILE_NAME))
+                if (IsFinished || FileExists(FILE_NAME))
                     IsHandled = true;
             }
             catch (Exception e)

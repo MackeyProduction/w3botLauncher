@@ -2,13 +2,11 @@
 using System.IO;
 using System.Net;
 using System.Threading;
-using w3bot.Command;
-using w3botLauncher.Service;
 using w3botLauncher.Utils;
 
 namespace w3botLauncher.Command
 {
-    public class DownloadClientCommand : AbstractHttpClient, ICommand
+    public class DownloadClientCommand : AbstractHttpClient, IFileCommand
     {
         public DownloadClientCommand(WebClient webClient, FileProcess fileProcess) : base(webClient, fileProcess)
         {
@@ -21,17 +19,13 @@ namespace w3botLauncher.Command
             {
                 return FileProcess;
             }
-            set
-            {
-                Process = value;
-            }
         }
 
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
         private string FILE_PATH = BotDirectories.baseDir;
-        private string FILE_NAME = "w3bot.exe";
+        private string FILE_NAME = "w3bot.zip";
 
         public void Execute()
         {
@@ -39,12 +33,11 @@ namespace w3botLauncher.Command
             {
                 Status = "Downloading client...";
 
-                Download(FILE_PATH, FILE_NAME);
+                Download(FILE_NAME);
 
-                if (Running)
-                    IsRunning = true;
+                IsRunning = Running;
 
-                if (IsFinished || FileExists(FILE_PATH, FILE_NAME))
+                if (IsFinished || FileExists(FILE_NAME))
                     IsHandled = true;
             }
             catch (Exception e)

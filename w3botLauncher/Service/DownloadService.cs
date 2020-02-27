@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using w3bot.Command;
+using w3botLauncher.Command;
+using w3botLauncher.Service.Factory;
 using w3botLauncher.Utils;
 
 namespace w3botLauncher.Service
@@ -17,7 +18,7 @@ namespace w3botLauncher.Service
             _downloadFactory = factory;
         }
 
-        public ICommand Create(DownloadType downloadType)
+        public IFileCommand Create(FileType downloadType)
         {
             return _downloadFactory.Create(downloadType);
         }

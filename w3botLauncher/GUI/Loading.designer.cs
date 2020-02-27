@@ -1,4 +1,4 @@
-﻿namespace w3bot.GUI
+﻿namespace w3botLauncher.GUI
 {
     partial class Loading
     {

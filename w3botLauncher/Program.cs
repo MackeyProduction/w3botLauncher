@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using w3bot.GUI;
+using w3botLauncher.GUI;
 
-namespace w3bot
+namespace w3botLauncher
 {
     static class Program
     {

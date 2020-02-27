@@ -50,6 +50,12 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,8 +67,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\BotDirectories.cs" />
+    <Compile Include="Command\AbstractExtractor.cs" />
+    <Compile Include="Command\CreateBotDirectoriesCommand.cs" />
+    <Compile Include="Command\ExtractClientCommand.cs" />
+    <Compile Include="Command\ExtractTesseractFilesCommand.cs" />
     <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\IFileCommand.cs" />
+    <Compile Include="Command\MoveClientCommand.cs" />
+    <Compile Include="Command\MoveTesseractFilesCommand.cs" />
+    <Compile Include="ExceptionMessage\InvalidFileTypeException.cs" />
     <Compile Include="GUI\Loading.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,10 +86,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Command\DownloadTesseractFilesCommand.cs" />
     <Compile Include="Command\DownloadClientCommand.cs" />
-    <Compile Include="Service\AbstractHttpClient.cs" />
-    <Compile Include="Service\DownloadFactory.cs" />
+    <Compile Include="Command\AbstractHttpClient.cs" />
+    <Compile Include="Service\Factory\ExtractFactory.cs" />
+    <Compile Include="Service\ExtractService.cs" />
+    <Compile Include="Service\Factory\DownloadFactory.cs" />
     <Compile Include="Service\DownloadService.cs" />
-    <Compile Include="Utils\DownloadType.cs" />
+    <Compile Include="Utils\BotDirectories.cs" />
+    <Compile Include="Utils\FileType.cs" />
     <Compile Include="Utils\FileProcess.cs" />
     <EmbeddedResource Include="GUI\Loading.resx">
       <DependentUpon>Loading.cs</DependentUpon>
@@ -90,6 +106,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
