@@ -6,15 +6,25 @@ using System.Threading.Tasks;
 
 namespace w3botLauncher.Command
 {
-    public class MoveTesseractFilesCommand : ICommand
+    public class MoveTesseractFilesCommand : AbstractMove, ICommand
     {
+        public MoveTesseractFilesCommand(string path) : base(path)
+        {
+        }
+
         public string Status { get; set; }
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
+        private const string MOVE_DIRECTORY = "tessdata";
 
         public void Execute()
         {
-            
+            Status = "Moving tessdata files...";
+
+            if (IsFinished)
+                IsHandled = true;
+
+            Move(GetFullPath(CurrentPath, MOVE_DIRECTORY), GetFullPath(MovePath, MOVE_DIRECTORY));
         }
     }
 }

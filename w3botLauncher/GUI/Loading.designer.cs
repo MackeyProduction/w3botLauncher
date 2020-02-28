@@ -34,6 +34,7 @@
             this.statusLabelMessage = new System.Windows.Forms.Label();
             this.fileDataReceivedLabel = new System.Windows.Forms.Label();
             this.LoadingBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.LoadingFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             // 
             // loadingLabel
@@ -87,6 +88,10 @@
             this.LoadingBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.LoadingBackgroundWorker_ProgressChanged);
             this.LoadingBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.LoadingBackgroundWorker_RunWorkerCompleted);
             // 
+            // LoadingFolderBrowserDialog
+            // 
+            this.LoadingFolderBrowserDialog.Description = "Select your install directory for w3bot.";
+            // 
             // Loading
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -120,5 +125,6 @@
         private System.Windows.Forms.Label statusLabelMessage;
         private System.Windows.Forms.Label fileDataReceivedLabel;
         private System.ComponentModel.BackgroundWorker LoadingBackgroundWorker;
+        private System.Windows.Forms.FolderBrowserDialog LoadingFolderBrowserDialog;
     }
 }

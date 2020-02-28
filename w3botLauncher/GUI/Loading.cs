@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,7 +22,10 @@ namespace w3botLauncher.GUI
     public partial class Loading : Form
     {
         private List<ICommand> _commandList = new List<ICommand>();
-        private string APPLICATION_NAME = Directory.GetCurrentDirectory() + @"\w3bot\w3bot.exe";
+        private const string APPLICATION_NAME = "w3bot.exe";
+        private const string REGISTRY_SUBKEY = "w3bot";
+        private const string REGISTRY_VALUE_TYPE = "Path";
+        private string _installPath;
 
         public Loading()
         {
@@ -32,9 +36,10 @@ namespace w3botLauncher.GUI
 
         private void Loading_Load(object sender, EventArgs e)
         {
+            CheckInstallPath();
             statusLabelMessage.Text = "";
             fileDataReceivedLabel.Text = "";
-
+            
             var webClient = new WebClient();
             var fileProcess = new FileProcess();
             var botDirectories = new CreateBotDirectoriesCommand();
@@ -42,16 +47,22 @@ namespace w3botLauncher.GUI
             var downloadService = new DownloadService(downloadFactory);
             var extractFactory = new ExtractFactory();
             var extractService = new ExtractService(extractFactory);
+            var moveFactory = new MoveFactory();
+            var moveService = new MoveService(moveFactory);
             var tesseractDownload = downloadService.Create(FileType.Tesseract);
             var clientDownload = downloadService.Create(FileType.Client);
             var tesseractExtract = extractService.Create(FileType.Tesseract);
             var clientExtract = extractService.Create(FileType.Client);
+            var tesseractMove = moveService.Create(FileType.Tesseract, BotDirectories.binDir);
+            var clientMove = moveService.Create(FileType.Client, _installPath);
 
             _commandList.Add(botDirectories);
             _commandList.Add(tesseractDownload);
             _commandList.Add(clientDownload);
             _commandList.Add(tesseractExtract);
             _commandList.Add(clientExtract);
+            _commandList.Add(tesseractMove);
+            _commandList.Add(clientMove);
 
             if (LoadingBackgroundWorker.IsBusy != true)
             {
@@ -88,7 +99,7 @@ namespace w3botLauncher.GUI
             try
             {
                 statusLabelMessage.Text = "Starting w3bot...";
-                Process.Start(APPLICATION_NAME);
+                Process.Start(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME));
                 this.Close();
             }
             catch (Exception ex)
@@ -118,6 +129,72 @@ namespace w3botLauncher.GUI
                 }
 
                 Thread.Sleep(100);
+            }
+        }
+
+        private bool IsRegistrySubKeyAvailable()
+        {
+            using (var subKey = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true))
+            {
+                if (subKey == null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool IsRegistryEntryAvailable()
+        {
+            if (!IsRegistrySubKeyAvailable())
+                return false;
+
+            using (var subKey = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true))
+            {
+                var valueType = subKey.GetValue(REGISTRY_VALUE_TYPE);
+                if (valueType == null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void CreateRegistryEntry(string installPath)
+        {
+            if (!IsRegistrySubKeyAvailable())
+                Registry.CurrentUser.CreateSubKey(REGISTRY_SUBKEY);
+
+            if (!IsRegistryEntryAvailable())
+            {
+                var key = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true);
+                key.SetValue(REGISTRY_VALUE_TYPE, installPath);
+            }
+        }
+
+        private void CheckInstallPath()
+        {
+            try
+            {
+                if (!IsRegistrySubKeyAvailable() || !IsRegistryEntryAvailable())
+                {
+                    if (LoadingFolderBrowserDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        _installPath = LoadingFolderBrowserDialog.SelectedPath;
+                        CreateRegistryEntry(_installPath);
+                    }
+                    else
+                    {
+                        Application.Exit();
+                    }
+                }
+                else
+                {
+                    var key = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY);
+                    _installPath = key.GetValue(REGISTRY_VALUE_TYPE).ToString();
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
     }

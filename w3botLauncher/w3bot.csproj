@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\AbstractExtractor.cs" />
+    <Compile Include="Command\AbstractMove.cs" />
     <Compile Include="Command\CreateBotDirectoriesCommand.cs" />
     <Compile Include="Command\ExtractClientCommand.cs" />
     <Compile Include="Command\ExtractTesseractFilesCommand.cs" />
@@ -91,6 +92,8 @@
     <Compile Include="Service\ExtractService.cs" />
     <Compile Include="Service\Factory\DownloadFactory.cs" />
     <Compile Include="Service\DownloadService.cs" />
+    <Compile Include="Service\Factory\MoveFactory.cs" />
+    <Compile Include="Service\MoveService.cs" />
     <Compile Include="Utils\BotDirectories.cs" />
     <Compile Include="Utils\FileType.cs" />
     <Compile Include="Utils\FileProcess.cs" />
