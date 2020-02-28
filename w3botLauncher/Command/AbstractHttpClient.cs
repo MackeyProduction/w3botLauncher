@@ -14,7 +14,6 @@ namespace w3botLauncher.Command
 {
     public abstract class AbstractHttpClient
     {
-        protected const string ENDPOINT = "http://192.168.178.47:8000/w3bot/client/";
         protected FileProcess FileProcess { get; private set; }
         protected string FileStatus { get; private set; }
         protected static bool IsFinished { get; private set; }
@@ -38,7 +37,7 @@ namespace w3botLauncher.Command
 
                 _webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
                 _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
-                _webClient.DownloadFileAsync(new Uri(ENDPOINT + fileName), fileName);
+                _webClient.DownloadFileAsync(new Uri(Connection.ENDPOINT + fileName), fileName);
                 _semaphore.Wait(100);
                 Running = true;
             }

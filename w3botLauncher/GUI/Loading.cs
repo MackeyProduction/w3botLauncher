@@ -5,9 +5,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,27 +25,31 @@ namespace w3botLauncher.GUI
     {
         private List<ICommand> _commandList = new List<ICommand>();
         private const string APPLICATION_NAME = "w3bot.exe";
-        private const string REGISTRY_SUBKEY = "w3bot";
-        private const string REGISTRY_VALUE_TYPE = "Path";
         private string _installPath;
+        private WebClient _webClient;
 
         public Loading()
         {
             InitializeComponent();
             LoadingBackgroundWorker.WorkerReportsProgress = true;
             LoadingBackgroundWorker.WorkerSupportsCancellation = true;
+
+            _webClient = new WebClient();
         }
 
         private void Loading_Load(object sender, EventArgs e)
         {
-            CheckInstallPath();
+            if (InstallPathExists() && !IsNewVersionAvailable())
+                ExecuteApplication();
+            else if (IsNewVersionAvailable())
+                NotifyNewVersionIsAvailable();
+
             statusLabelMessage.Text = "";
             fileDataReceivedLabel.Text = "";
             
-            var webClient = new WebClient();
             var fileProcess = new FileProcess();
             var botDirectories = new CreateBotDirectoriesCommand();
-            var downloadFactory = new DownloadFactory(webClient, fileProcess);
+            var downloadFactory = new DownloadFactory(_webClient, fileProcess);
             var downloadService = new DownloadService(downloadFactory);
             var extractFactory = new ExtractFactory();
             var extractService = new ExtractService(extractFactory);
@@ -64,11 +70,7 @@ namespace w3botLauncher.GUI
             _commandList.Add(tesseractMove);
             _commandList.Add(clientMove);
 
-            if (LoadingBackgroundWorker.IsBusy != true)
-            {
-                // Start the asynchronous operation.
-                LoadingBackgroundWorker.RunWorkerAsync();
-            }
+            Run();
         }
 
         private void SetStatusLabel(string message)
@@ -96,16 +98,7 @@ namespace w3botLauncher.GUI
 
         private void LoadingBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            try
-            {
-                statusLabelMessage.Text = "Starting w3bot...";
-                Process.Start(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME));
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            ExecuteApplication();
         }
 
         private void Execute(ICommand c)
@@ -132,54 +125,18 @@ namespace w3botLauncher.GUI
             }
         }
 
-        private bool IsRegistrySubKeyAvailable()
-        {
-            using (var subKey = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true))
-            {
-                if (subKey == null)
-                    return false;
-            }
-
-            return true;
-        }
-
-        private bool IsRegistryEntryAvailable()
-        {
-            if (!IsRegistrySubKeyAvailable())
-                return false;
-
-            using (var subKey = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true))
-            {
-                var valueType = subKey.GetValue(REGISTRY_VALUE_TYPE);
-                if (valueType == null)
-                    return false;
-            }
-
-            return true;
-        }
-
-        private void CreateRegistryEntry(string installPath)
-        {
-            if (!IsRegistrySubKeyAvailable())
-                Registry.CurrentUser.CreateSubKey(REGISTRY_SUBKEY);
-
-            if (!IsRegistryEntryAvailable())
-            {
-                var key = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true);
-                key.SetValue(REGISTRY_VALUE_TYPE, installPath);
-            }
-        }
-
-        private void CheckInstallPath()
+        private bool InstallPathExists()
         {
             try
             {
-                if (!IsRegistrySubKeyAvailable() || !IsRegistryEntryAvailable())
+                if (!RegistryUtils.IsRegistrySubKeyAvailable() || !RegistryUtils.IsRegistryEntryAvailable())
                 {
                     if (LoadingFolderBrowserDialog.ShowDialog() == DialogResult.OK)
                     {
                         _installPath = LoadingFolderBrowserDialog.SelectedPath;
-                        CreateRegistryEntry(_installPath);
+                        RegistryUtils.CreateRegistryEntry(_installPath);
+
+                        return false;
                     }
                     else
                     {
@@ -188,13 +145,72 @@ namespace w3botLauncher.GUI
                 }
                 else
                 {
-                    var key = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY);
-                    _installPath = key.GetValue(REGISTRY_VALUE_TYPE).ToString();
+                    var key = Registry.CurrentUser.OpenSubKey(RegistryUtils.REGISTRY_SUBKEY);
+                    _installPath = key.GetValue(RegistryUtils.REGISTRY_VALUE_TYPE).ToString();
+
+                    return true;
                 }
             }
             catch (Exception e)
             {
                 throw e;
+            }
+
+            return false;
+        }
+
+        private bool IsNewVersionAvailable()
+        {
+            try
+            {
+                var currentVersion = double.Parse(_webClient.DownloadString(Connection.ENDPOINT + "version.txt"));
+                var clientAssembly = Assembly.LoadFrom(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME));
+                var clientAssemblyVersion = clientAssembly.GetName().Version;
+                var clientVersion = float.Parse(clientAssemblyVersion.Major + "." + clientAssemblyVersion.Minor + "." + clientAssemblyVersion.Build + "." + clientAssemblyVersion.Revision);
+
+                if (currentVersion > clientVersion)
+                    return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return false;
+        }
+
+        private void NotifyNewVersionIsAvailable()
+        {
+            if (MessageBox.Show("A new version is available. Do you want to download the new version of w3bot?", "New version available", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                Run();
+            }
+            else
+            {
+                Application.Exit();
+            }
+        }
+
+        private void ExecuteApplication()
+        {
+            try
+            {
+                statusLabelMessage.Text = "Starting w3bot...";
+                Process.Start(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME));
+                Application.Exit();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void Run()
+        {
+            if (LoadingBackgroundWorker.IsBusy != true)
+            {
+                // Start the asynchronous operation.
+                LoadingBackgroundWorker.RunWorkerAsync();
             }
         }
     }

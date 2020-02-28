@@ -95,8 +95,10 @@
     <Compile Include="Service\Factory\MoveFactory.cs" />
     <Compile Include="Service\MoveService.cs" />
     <Compile Include="Utils\BotDirectories.cs" />
+    <Compile Include="Utils\Connection.cs" />
     <Compile Include="Utils\FileType.cs" />
     <Compile Include="Utils\FileProcess.cs" />
+    <Compile Include="Utils\RegistryUtils.cs" />
     <EmbeddedResource Include="GUI\Loading.resx">
       <DependentUpon>Loading.cs</DependentUpon>
     </EmbeddedResource>

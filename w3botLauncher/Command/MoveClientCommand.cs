@@ -19,12 +19,19 @@ namespace w3botLauncher.Command
 
         public void Execute()
         {
-            Status = "Moving client...";
-            
-            if (IsFinished)
-                IsHandled = true;
+            try
+            {
+                Status = "Moving client...";
 
-            Move(GetFullPath(CurrentPath, MOVE_DIRECTORY), MovePath);
+                if (IsFinished)
+                    IsHandled = true;
+
+                Move(GetFullPath(CurrentPath, MOVE_DIRECTORY), MovePath);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }
