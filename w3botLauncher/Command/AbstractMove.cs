@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace w3botLauncher.Command
@@ -11,7 +12,7 @@ namespace w3botLauncher.Command
     {
         protected string MovePath { get; private set; }
         protected string CurrentPath { get; private set; }
-        protected bool IsFinished { get; private set; }
+        protected bool IsFinished { get; private set; } = false;
 
         public AbstractMove(string path)
         {
@@ -23,24 +24,34 @@ namespace w3botLauncher.Command
         {
             var sourceDirectory = new DirectoryInfo(sourcePath);
             var destinationDirectory = new DirectoryInfo(destinationPath);
+            var appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\w3bot";
 
             if (!sourceDirectory.Exists)
                 throw new InvalidOperationException(String.Format("The directory by the name {0} does not exists.", sourcePath));
 
-            if (!destinationDirectory.Exists)
-                Directory.CreateDirectory(destinationPath);
+            if (!Directory.Exists(appdataPath))
+                Directory.CreateDirectory(appdataPath);
 
-            if (destinationDirectory.GetFiles().Length > 0)
+            Task.Run(() =>
             {
+                MoveDirectories(sourceDirectory, sourcePath, destinationPath);
                 IsFinished = true;
-                return;
-            }
+            });
 
+            while (!IsFinished)
+                Thread.Sleep(100);
+        }
+
+        private void MoveDirectories(DirectoryInfo sourceDirectory, string sourcePath, string destinationPath)
+        {
             foreach (var directory in sourceDirectory.GetDirectories())
             {
                 var newDirectory = new DirectoryInfo(GetFullPath(destinationPath, directory.Name));
                 if (!newDirectory.Exists)
                     Directory.CreateDirectory(newDirectory.FullName);
+
+                if (directory.Exists)
+                    MoveDirectories(directory, directory.FullName, newDirectory.FullName);
 
                 if (directory.GetFiles().Length > 0)
                     MoveFiles(directory, directory.FullName, newDirectory.FullName);
@@ -57,7 +68,7 @@ namespace w3botLauncher.Command
                 var currentPath = GetFullPath(sourcePath, fileName);
                 var movePath = GetFullPath(destinationPath, fileName);
 
-                File.Move(currentPath, movePath);
+                File.Copy(currentPath, movePath, true);
             }
         }
 

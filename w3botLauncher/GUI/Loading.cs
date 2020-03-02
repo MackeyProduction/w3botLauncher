@@ -163,10 +163,17 @@ namespace w3botLauncher.GUI
         {
             try
             {
+                if (!File.Exists(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME)))
+                    return false;
+
+                var appDomain = AppDomain.CreateDomain("w3bot-file");
+                var assemblyName = new AssemblyName();
+                assemblyName.CodeBase = String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME);
                 var currentVersion = double.Parse(_webClient.DownloadString(Connection.ENDPOINT + "version.txt"));
-                var clientAssembly = Assembly.LoadFrom(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME));
+                var clientAssembly = appDomain.Load(assemblyName);
                 var clientAssemblyVersion = clientAssembly.GetName().Version;
                 var clientVersion = float.Parse(clientAssemblyVersion.Major + "." + clientAssemblyVersion.Minor + "." + clientAssemblyVersion.Build + "." + clientAssemblyVersion.Revision);
+                AppDomain.Unload(appDomain);
 
                 if (currentVersion > clientVersion)
                     return true;
