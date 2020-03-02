@@ -24,13 +24,12 @@ namespace w3botLauncher.Command
         {
             var sourceDirectory = new DirectoryInfo(sourcePath);
             var destinationDirectory = new DirectoryInfo(destinationPath);
-            var appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\w3bot";
 
             if (!sourceDirectory.Exists)
                 throw new InvalidOperationException(String.Format("The directory by the name {0} does not exists.", sourcePath));
 
-            if (!Directory.Exists(appdataPath))
-                Directory.CreateDirectory(appdataPath);
+            if (!destinationDirectory.Exists)
+                Directory.CreateDirectory(destinationPath);
 
             Task.Run(() =>
             {
