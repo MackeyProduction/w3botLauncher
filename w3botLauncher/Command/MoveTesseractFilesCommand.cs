@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace w3botLauncher.Command
 {
-    public class MoveTesseractFilesCommand : AbstractMove, ICommand
+    public class MoveTesseractFilesCommand : AbstractInputOutput, ICommand
     {
         public MoveTesseractFilesCommand(string path) : base(path)
         {
@@ -19,12 +19,19 @@ namespace w3botLauncher.Command
 
         public void Execute()
         {
-            Status = "Moving tessdata files...";
+            try
+            {
+                Status = "Moving tessdata files...";
 
-            if (IsFinished)
-                IsHandled = true;
+                if (IsFinished)
+                    IsHandled = true;
 
-            Move(GetFullPath(CurrentPath, MOVE_DIRECTORY), GetFullPath(MovePath, MOVE_DIRECTORY));
+                Move(GetFullPath(CurrentPath, MOVE_DIRECTORY), GetFullPath(DestinationPath, MOVE_DIRECTORY));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

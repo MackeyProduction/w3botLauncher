@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\AbstractExtractor.cs" />
-    <Compile Include="Command\AbstractMove.cs" />
+    <Compile Include="Command\AbstractInputOutput.cs" />
     <Compile Include="Command\CreateBotDirectoriesCommand.cs" />
     <Compile Include="Command\ExtractClientCommand.cs" />
     <Compile Include="Command\ExtractTesseractFilesCommand.cs" />
@@ -76,6 +76,8 @@
     <Compile Include="Command\IFileCommand.cs" />
     <Compile Include="Command\MoveClientCommand.cs" />
     <Compile Include="Command\MoveTesseractFilesCommand.cs" />
+    <Compile Include="Command\RemoveClientCommand.cs" />
+    <Compile Include="Command\RemoveTesseractFilesCommand.cs" />
     <Compile Include="ExceptionMessage\InvalidFileTypeException.cs" />
     <Compile Include="GUI\Loading.cs">
       <SubType>Form</SubType>
@@ -93,10 +95,15 @@
     <Compile Include="Service\Factory\DownloadFactory.cs" />
     <Compile Include="Service\DownloadService.cs" />
     <Compile Include="Service\Factory\MoveFactory.cs" />
+    <Compile Include="Service\Factory\RemoveFactory.cs" />
     <Compile Include="Service\MoveService.cs" />
+    <Compile Include="Service\RemoveService.cs" />
     <Compile Include="Utils\BotDirectories.cs" />
+    <Compile Include="Utils\Connection.cs" />
     <Compile Include="Utils\FileType.cs" />
     <Compile Include="Utils\FileProcess.cs" />
+    <Compile Include="Utils\RegistryUtils.cs" />
+    <Compile Include="Utils\VersionLoader.cs" />
     <EmbeddedResource Include="GUI\Loading.resx">
       <DependentUpon>Loading.cs</DependentUpon>
     </EmbeddedResource>

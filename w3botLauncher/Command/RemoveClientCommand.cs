@@ -1,32 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace w3botLauncher.Command
 {
-    public class MoveClientCommand : AbstractInputOutput, ICommand
+    public class RemoveClientCommand : AbstractInputOutput, ICommand
     {
-        public MoveClientCommand(string path) : base(path)
+        public RemoveClientCommand(string path) : base(path)
         {
         }
 
         public string Status { get; set; }
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
-        private const string MOVE_DIRECTORY = "w3bot";
+
+        private string CLIENT_DIRECTORY = Directory.GetCurrentDirectory() + @"\w3bot";
+        private string CLIENT_FILE = Directory.GetCurrentDirectory() + @"\w3bot.zip";
 
         public void Execute()
         {
             try
             {
-                Status = "Moving client...";
+                Status = "Removing client...";
 
                 if (IsFinished)
+                {
                     IsHandled = true;
+                    return;
+                }
 
-                Move(GetFullPath(CurrentPath, MOVE_DIRECTORY), DestinationPath);
+                if (File.Exists(CLIENT_FILE))
+                    File.Delete(CLIENT_FILE);
+                Remove(CLIENT_DIRECTORY);
             }
             catch (Exception e)
             {
