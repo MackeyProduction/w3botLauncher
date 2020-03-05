@@ -25,6 +25,7 @@ namespace w3botLauncher.GUI
     {
         private List<ICommand> _commandList = new List<ICommand>();
         private const string APPLICATION_NAME = "w3bot.exe";
+        private string _currentDirectory = Directory.GetCurrentDirectory();
         private string _installPath;
         private WebClient _webClient;
 
@@ -55,12 +56,16 @@ namespace w3botLauncher.GUI
             var extractService = new ExtractService(extractFactory);
             var moveFactory = new MoveFactory();
             var moveService = new MoveService(moveFactory);
+            var removeFactory = new RemoveFactory();
+            var removeService = new RemoveService(removeFactory);
             var tesseractDownload = downloadService.Create(FileType.Tesseract);
             var clientDownload = downloadService.Create(FileType.Client);
             var tesseractExtract = extractService.Create(FileType.Tesseract);
             var clientExtract = extractService.Create(FileType.Client);
             var tesseractMove = moveService.Create(FileType.Tesseract, BotDirectories.binDir);
             var clientMove = moveService.Create(FileType.Client, _installPath);
+            var tesseractRemove = removeService.Create(FileType.Tesseract, _currentDirectory);
+            var clientRemove = removeService.Create(FileType.Client, _currentDirectory);
 
             _commandList.Add(botDirectories);
             _commandList.Add(tesseractDownload);
@@ -69,6 +74,8 @@ namespace w3botLauncher.GUI
             _commandList.Add(clientExtract);
             _commandList.Add(tesseractMove);
             _commandList.Add(clientMove);
+            _commandList.Add(tesseractRemove);
+            _commandList.Add(clientRemove);
 
             Run();
         }
@@ -166,12 +173,11 @@ namespace w3botLauncher.GUI
                 if (!File.Exists(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME)))
                     return false;
 
-                var appDomain = AppDomain.CreateDomain("w3bot-file");
-                var assemblyName = new AssemblyName();
-                assemblyName.CodeBase = String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME);
                 var currentVersion = double.Parse(_webClient.DownloadString(Connection.ENDPOINT + "version.txt"));
-                var clientAssembly = appDomain.Load(assemblyName);
-                var clientAssemblyVersion = clientAssembly.GetName().Version;
+                var appDomain = AppDomain.CreateDomain(nameof(VersionLoader), AppDomain.CurrentDomain.Evidence, new AppDomainSetup { ApplicationBase = Path.GetDirectoryName(typeof(VersionLoader).Assembly.Location) });
+                var loader = (VersionLoader)appDomain.CreateInstanceAndUnwrap(typeof(VersionLoader).Assembly.FullName, typeof(VersionLoader).FullName);
+                loader.Load(String.Format(@"{0}\{1}", _installPath, APPLICATION_NAME));
+                var clientAssemblyVersion = loader.Version;
                 var clientVersion = float.Parse(clientAssemblyVersion.Major + "." + clientAssemblyVersion.Minor + "." + clientAssemblyVersion.Build + "." + clientAssemblyVersion.Revision);
                 AppDomain.Unload(appDomain);
 

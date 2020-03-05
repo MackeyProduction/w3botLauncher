@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace w3botLauncher.Command
 {
-    public abstract class AbstractMove
+    public abstract class AbstractInputOutput
     {
-        protected string MovePath { get; private set; }
+        protected string DestinationPath { get; private set; }
         protected string CurrentPath { get; private set; }
         protected bool IsFinished { get; private set; } = false;
 
-        public AbstractMove(string path)
+        public AbstractInputOutput(string path)
         {
-            MovePath = path;
+            DestinationPath = path;
             CurrentPath = Directory.GetCurrentDirectory();
         }
 
@@ -34,6 +34,26 @@ namespace w3botLauncher.Command
             Task.Run(() =>
             {
                 MoveDirectories(sourceDirectory, sourcePath, destinationPath);
+                IsFinished = true;
+            });
+
+            while (!IsFinished)
+                Thread.Sleep(100);
+        }
+
+        public void Remove(string destinationPath)
+        {
+            var destinationDirectory = new DirectoryInfo(destinationPath);
+
+            Task.Run(() =>
+            {
+                if (destinationDirectory.GetFiles().Length > 0)
+                    RemoveFiles(destinationDirectory, destinationPath);
+
+                if (destinationDirectory.GetDirectories().Length > 0)
+                    RemoveDirectories(destinationDirectory, destinationPath);
+
+                Directory.Delete(destinationPath);
                 IsFinished = true;
             });
 
@@ -68,6 +88,31 @@ namespace w3botLauncher.Command
                 var movePath = GetFullPath(destinationPath, fileName);
 
                 File.Copy(currentPath, movePath, true);
+            }
+        }
+
+        private void RemoveDirectories(DirectoryInfo destinationDirectory, string destinationPath)
+        {
+            foreach (var directory in destinationDirectory.GetDirectories())
+            {
+                if (directory.Exists)
+                    RemoveDirectories(directory, directory.FullName);
+
+                if (directory.GetFiles().Length > 0)
+                    RemoveFiles(directory, directory.FullName);
+
+                Directory.Delete(directory.FullName);
+            }
+        }
+
+        private void RemoveFiles(DirectoryInfo destinationDirectory, string destinationPath)
+        {
+            foreach (var file in destinationDirectory.GetFiles())
+            {
+                var fileName = file.Name;
+                var path = GetFullPath(destinationPath, fileName);
+
+                File.Delete(path);
             }
         }
 
