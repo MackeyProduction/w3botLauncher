@@ -33,7 +33,12 @@ namespace w3botLauncher.Command
 
             Task.Run(() =>
             {
-                MoveDirectories(sourceDirectory, sourcePath, destinationPath);
+                if (sourceDirectory.GetFiles().Length > 0)
+                    MoveFiles(sourceDirectory, sourcePath, destinationPath);
+
+                if (sourceDirectory.GetDirectories().Length > 0)
+                    MoveDirectories(sourceDirectory, sourcePath, destinationPath);
+                
                 IsFinished = true;
             });
 
