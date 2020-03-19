@@ -14,7 +14,7 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string SOURCE_PATH = Directory.GetCurrentDirectory() + @"\w3bot.zip";
+        private string SOURCE_PATH = Directory.GetCurrentDirectory() + @"\client.zip";
         private string DESTINATION_PATH = Directory.GetCurrentDirectory();
 
         public void Execute()

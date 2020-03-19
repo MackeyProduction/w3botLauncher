@@ -40,7 +40,7 @@
             // loadingLabel
             // 
             this.loadingLabel.AutoSize = true;
-            this.loadingLabel.Location = new System.Drawing.Point(40, 9);
+            this.loadingLabel.Location = new System.Drawing.Point(58, 9);
             this.loadingLabel.Name = "loadingLabel";
             this.loadingLabel.Size = new System.Drawing.Size(146, 13);
             this.loadingLabel.TabIndex = 0;
@@ -51,7 +51,7 @@
             this.downloadProgressBar.Location = new System.Drawing.Point(15, 25);
             this.downloadProgressBar.MarqueeAnimationSpeed = 50;
             this.downloadProgressBar.Name = "downloadProgressBar";
-            this.downloadProgressBar.Size = new System.Drawing.Size(201, 23);
+            this.downloadProgressBar.Size = new System.Drawing.Size(221, 23);
             this.downloadProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.downloadProgressBar.TabIndex = 1;
             // 
@@ -75,7 +75,7 @@
             // 
             // fileDataReceivedLabel
             // 
-            this.fileDataReceivedLabel.Location = new System.Drawing.Point(136, 53);
+            this.fileDataReceivedLabel.Location = new System.Drawing.Point(156, 53);
             this.fileDataReceivedLabel.Name = "fileDataReceivedLabel";
             this.fileDataReceivedLabel.Size = new System.Drawing.Size(80, 13);
             this.fileDataReceivedLabel.TabIndex = 4;
@@ -96,7 +96,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(223, 75);
+            this.ClientSize = new System.Drawing.Size(257, 75);
             this.ControlBox = false;
             this.Controls.Add(this.fileDataReceivedLabel);
             this.Controls.Add(this.statusLabelMessage);
