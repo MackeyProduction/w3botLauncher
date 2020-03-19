@@ -25,7 +25,7 @@ namespace w3botLauncher.Command
         public bool IsRunning { get; set; }
 
         private string FILE_PATH = BotDirectories.baseDir;
-        private string FILE_NAME = "w3bot.zip";
+        private string FILE_NAME = "client.zip";
 
         public void Execute()
         {

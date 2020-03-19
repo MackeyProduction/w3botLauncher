@@ -15,7 +15,7 @@ namespace w3botLauncher.Command
         public string Status { get; set; }
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
-        private const string MOVE_DIRECTORY = "w3bot";
+        private const string MOVE_DIRECTORY = "client";
 
         public void Execute()
         {
