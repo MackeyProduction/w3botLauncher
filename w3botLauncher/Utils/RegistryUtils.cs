@@ -9,7 +9,7 @@ namespace w3botLauncher.Utils
 {
     public static class RegistryUtils
     {
-        public const string REGISTRY_SUBKEY = "w3bot";
+        public const string REGISTRY_SUBKEY = @"Software\w3bot";
         public const string REGISTRY_VALUE_TYPE = "Path";
 
         public static bool IsRegistrySubKeyAvailable()
@@ -48,6 +48,19 @@ namespace w3botLauncher.Utils
                 var key = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY, true);
                 key.SetValue(REGISTRY_VALUE_TYPE, installPath);
             }
+        }
+
+        public static string GetRegistryEntry()
+        {
+            if (!IsRegistrySubKeyAvailable() || !IsRegistryEntryAvailable())
+            {
+                throw new InvalidOperationException("No valid registry entry could be found.");
+            }
+
+            var key = Registry.CurrentUser.OpenSubKey(REGISTRY_SUBKEY);
+            var installPath = key.GetValue(REGISTRY_VALUE_TYPE).ToString();
+
+            return installPath;
         }
     }
 }
