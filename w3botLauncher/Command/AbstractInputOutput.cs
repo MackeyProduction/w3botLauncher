@@ -31,6 +31,9 @@ namespace w3botLauncher.Command
             if (!destinationDirectory.Exists)
                 Directory.CreateDirectory(destinationPath);
 
+            if (!Directory.Exists(sourcePath))
+                return;
+
             Task.Run(() =>
             {
                 if (sourceDirectory.GetFiles().Length > 0)
@@ -92,6 +95,9 @@ namespace w3botLauncher.Command
                 var currentPath = GetFullPath(sourcePath, fileName);
                 var movePath = GetFullPath(destinationPath, fileName);
 
+                if (!File.Exists(currentPath))
+                    return;
+
                 File.Copy(currentPath, movePath, true);
             }
         }
@@ -116,6 +122,9 @@ namespace w3botLauncher.Command
             {
                 var fileName = file.Name;
                 var path = GetFullPath(destinationPath, fileName);
+
+                if (!File.Exists(path))
+                    return;
 
                 File.Delete(path);
             }
