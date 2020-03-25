@@ -24,7 +24,7 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string FILE_PATH = BotDirectories.baseDir;
+        private string FILE_PATH = RegistryUtils.GetRegistryEntry();
         private string FILE_NAME = "client.zip";
 
         public void Execute()
@@ -33,12 +33,18 @@ namespace w3botLauncher.Command
             {
                 Status = "Downloading client...";
 
-                Download(FILE_NAME);
-
                 IsRunning = Running;
+                if (IsRunning)
+                    return;
 
-                if (IsFinished || FileExists(FILE_NAME))
+                if (IsFinished)
+                {
                     IsHandled = true;
+                    Reset();
+                    return;
+                }
+
+                Download(FILE_NAME, String.Format(@"{0}\{1}", FILE_PATH, FILE_NAME));
             }
             catch (Exception e)
             {

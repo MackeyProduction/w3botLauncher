@@ -54,16 +54,12 @@ namespace w3botLauncher.GUI
             var downloadService = new DownloadService(downloadFactory);
             var extractFactory = new ExtractFactory();
             var extractService = new ExtractService(extractFactory);
-            var moveFactory = new MoveFactory();
-            var moveService = new MoveService(moveFactory);
             var removeFactory = new RemoveFactory();
             var removeService = new RemoveService(removeFactory);
             var tesseractDownload = downloadService.Create(FileType.Tesseract);
             var clientDownload = downloadService.Create(FileType.Client);
             var tesseractExtract = extractService.Create(FileType.Tesseract);
             var clientExtract = extractService.Create(FileType.Client);
-            var tesseractMove = moveService.Create(FileType.Tesseract, BotDirectories.binDir);
-            var clientMove = moveService.Create(FileType.Client, _installPath);
             var tesseractRemove = removeService.Create(FileType.Tesseract, _currentDirectory);
             var clientRemove = removeService.Create(FileType.Client, _currentDirectory);
 
@@ -72,8 +68,6 @@ namespace w3botLauncher.GUI
             _commandList.Add(clientDownload);
             _commandList.Add(tesseractExtract);
             _commandList.Add(clientExtract);
-            _commandList.Add(tesseractMove);
-            _commandList.Add(clientMove);
             _commandList.Add(tesseractRemove);
             _commandList.Add(clientRemove);
 

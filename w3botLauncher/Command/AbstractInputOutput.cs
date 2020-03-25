@@ -69,6 +69,15 @@ namespace w3botLauncher.Command
                 Thread.Sleep(100);
         }
 
+        public void RemoveFile(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new InvalidOperationException(String.Format("No valid file found in {0}.", filePath));
+
+            File.Delete(filePath);
+            IsFinished = true;
+        }
+
         private void MoveDirectories(DirectoryInfo sourceDirectory, string sourcePath, string destinationPath)
         {
             foreach (var directory in sourceDirectory.GetDirectories())

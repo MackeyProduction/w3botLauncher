@@ -90,7 +90,7 @@
             // 
             // LoadingFolderBrowserDialog
             // 
-            this.LoadingFolderBrowserDialog.Description = "Select your install directory for w3bot.";
+            this.LoadingFolderBrowserDialog.Description = "Choose your install directory for w3bot.";
             // 
             // Loading
             // 

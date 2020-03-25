@@ -14,8 +14,8 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; } = false;
 
-        private string SOURCE_PATH = Directory.GetCurrentDirectory() + @"\tessdata.zip";
-        private string DESTINATION_PATH = Directory.GetCurrentDirectory();
+        private string SOURCE_PATH = BotDirectories.binDir + @"\tessdata.zip";
+        private string DESTINATION_PATH = BotDirectories.binDir;
 
         public void Execute()
         {
