@@ -8,7 +8,7 @@ namespace w3botLauncher.Command
 {
     public class DownloadClientCommand : AbstractHttpClient, IFileCommand
     {
-        public DownloadClientCommand(WebClient webClient, FileProcess fileProcess) : base(webClient, fileProcess)
+        public DownloadClientCommand(WebClient webClient, FileProcess fileProcess, string path) : base(webClient, fileProcess, path)
         {
         }
 
@@ -24,7 +24,6 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string FILE_PATH = RegistryUtils.GetRegistryEntry();
         private string FILE_NAME = "client.zip";
 
         public void Execute()
@@ -44,7 +43,7 @@ namespace w3botLauncher.Command
                     return;
                 }
 
-                Download(FILE_NAME, String.Format(@"{0}\{1}", FILE_PATH, FILE_NAME));
+                Download(FILE_NAME, GetFullPath(DestinationPath, FILE_NAME));
             }
             catch (Exception e)
             {

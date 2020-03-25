@@ -13,11 +13,13 @@ namespace w3botLauncher.Command
 {
     public abstract class AbstractExtractor
     {
+        protected string DestinationPath { get; private set; }
         protected bool IsFinished { get; private set; } = false;
         protected bool Running { get; private set; } = false;
 
-        public AbstractExtractor()
+        public AbstractExtractor(string path)
         {
+            DestinationPath = path;
         }
 
         public void Compress(string folder, string targetFileName)
@@ -65,6 +67,11 @@ namespace w3botLauncher.Command
             {
                 throw e;
             }
+        }
+
+        public string GetFullPath(string sourcePath, string destinationPath)
+        {
+            return String.Format(@"{0}\{1}", sourcePath, destinationPath);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace w3botLauncher.GUI
     {
         private List<ICommand> _commandList = new List<ICommand>();
         private const string APPLICATION_NAME = "w3bot.exe";
-        private string _currentDirectory = Directory.GetCurrentDirectory();
+        private string _binDirectory = BotDirectories.binDir;
         private string _installPath;
         private WebClient _webClient;
 
@@ -56,12 +56,12 @@ namespace w3botLauncher.GUI
             var extractService = new ExtractService(extractFactory);
             var removeFactory = new RemoveFactory();
             var removeService = new RemoveService(removeFactory);
-            var tesseractDownload = downloadService.Create(FileType.Tesseract);
-            var clientDownload = downloadService.Create(FileType.Client);
-            var tesseractExtract = extractService.Create(FileType.Tesseract);
-            var clientExtract = extractService.Create(FileType.Client);
-            var tesseractRemove = removeService.Create(FileType.Tesseract, _currentDirectory);
-            var clientRemove = removeService.Create(FileType.Client, _currentDirectory);
+            var tesseractDownload = downloadService.Create(FileType.Tesseract, _binDirectory);
+            var clientDownload = downloadService.Create(FileType.Client, _installPath);
+            var tesseractExtract = extractService.Create(FileType.Tesseract, _binDirectory);
+            var clientExtract = extractService.Create(FileType.Client, _installPath);
+            var tesseractRemove = removeService.Create(FileType.Tesseract, _binDirectory);
+            var clientRemove = removeService.Create(FileType.Client, _installPath);
 
             _commandList.Add(botDirectories);
             _commandList.Add(tesseractDownload);

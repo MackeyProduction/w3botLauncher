@@ -17,14 +17,14 @@ namespace w3botLauncher.Service.Factory
             _fileProcess = fileProcess;
         }
 
-        public IFileCommand Create(FileType fileType)
+        public IFileCommand Create(FileType fileType, string path)
         {
             switch (fileType)
             {
                 case FileType.Tesseract:
-                    return new DownloadTesseractFilesCommand(_webClient, _fileProcess);
+                    return new DownloadTesseractFilesCommand(_webClient, _fileProcess, path);
                 case FileType.Client:
-                    return new DownloadClientCommand(_webClient, _fileProcess);
+                    return new DownloadClientCommand(_webClient, _fileProcess, path);
                 default:
                     break;
             }

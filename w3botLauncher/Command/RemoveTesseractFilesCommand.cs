@@ -18,7 +18,7 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string TESSERACT_FILE = BotDirectories.binDir + @"\tessdata.zip";
+        private const string FILE_NAME = "tessdata.zip";
 
         public void Execute()
         {
@@ -32,7 +32,7 @@ namespace w3botLauncher.Command
                     return;
                 }
 
-                RemoveFile(TESSERACT_FILE);
+                RemoveFile(GetFullPath(DestinationPath, FILE_NAME));
             }
             catch (Exception e)
             {

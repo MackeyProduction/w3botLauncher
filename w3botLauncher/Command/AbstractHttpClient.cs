@@ -15,16 +15,18 @@ namespace w3botLauncher.Command
     public abstract class AbstractHttpClient
     {
         protected FileProcess FileProcess { get; private set; }
+        protected string DestinationPath { get; private set; }
         protected string FileStatus { get; private set; }
         protected static bool IsFinished { get; private set; } = false;
         protected bool IsCancelled { get; private set; } = false;
         protected static bool Running { get; private set; } = false;
         private WebClient _webClient;
 
-        public AbstractHttpClient(WebClient webClient, FileProcess fileProcess)
+        public AbstractHttpClient(WebClient webClient, FileProcess fileProcess, string path)
         {
             _webClient = webClient;
             FileProcess = fileProcess;
+            DestinationPath = path;
         }
 
         protected void Reset()
@@ -90,6 +92,11 @@ namespace w3botLauncher.Command
             FileProcess.ProgressPercentage = e.ProgressPercentage;
             FileProcess.BytesReceived = e.BytesReceived;
             FileProcess.TotalBytesToReceive = e.TotalBytesToReceive;
+        }
+
+        public string GetFullPath(string sourcePath, string destinationPath)
+        {
+            return String.Format(@"{0}\{1}", sourcePath, destinationPath);
         }
     }
 }

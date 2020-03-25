@@ -18,9 +18,9 @@ namespace w3botLauncher.Service
             _downloadFactory = factory;
         }
 
-        public IFileCommand Create(FileType downloadType)
+        public IFileCommand Create(FileType downloadType, string path)
         {
-            return _downloadFactory.Create(downloadType);
+            return _downloadFactory.Create(downloadType, path);
         }
     }
 }

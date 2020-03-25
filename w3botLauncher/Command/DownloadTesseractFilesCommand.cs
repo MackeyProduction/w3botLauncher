@@ -9,7 +9,7 @@ namespace w3botLauncher.Command
 {
     public class DownloadTesseractFilesCommand : AbstractHttpClient, IFileCommand
     {
-        public DownloadTesseractFilesCommand(WebClient webClient, FileProcess fileProcess) : base(webClient, fileProcess)
+        public DownloadTesseractFilesCommand(WebClient webClient, FileProcess fileProcess, string path) : base(webClient, fileProcess, path)
         {
         }
 
@@ -26,7 +26,6 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        protected string FILE_PATH = BotDirectories.binDir;
         protected string FILE_NAME = "tessdata.zip";
 
         public void Execute()
@@ -46,7 +45,7 @@ namespace w3botLauncher.Command
                     return;
                 }
 
-                Download(FILE_NAME, String.Format(@"{0}\{1}", FILE_PATH, FILE_NAME));
+                Download(FILE_NAME, GetFullPath(DestinationPath, FILE_NAME));
             }
             catch (Exception e)
             {

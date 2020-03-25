@@ -18,7 +18,7 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string CLIENT_FILE = RegistryUtils.GetRegistryEntry() + @"\client.zip";
+        private const string FILE_NAME = "client.zip";
 
         public void Execute()
         {
@@ -32,7 +32,7 @@ namespace w3botLauncher.Command
                     return;
                 }
 
-                RemoveFile(CLIENT_FILE);
+                RemoveFile(GetFullPath(DestinationPath, FILE_NAME));
             }
             catch (Exception e)
             {
