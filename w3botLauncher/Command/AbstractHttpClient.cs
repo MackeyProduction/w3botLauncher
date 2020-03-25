@@ -16,11 +16,10 @@ namespace w3botLauncher.Command
     {
         protected FileProcess FileProcess { get; private set; }
         protected string FileStatus { get; private set; }
-        protected static bool IsFinished { get; private set; }
-        protected bool IsCancelled { get; private set; }
-        protected static bool Running { get; private set; }
+        protected static bool IsFinished { get; private set; } = false;
+        protected bool IsCancelled { get; private set; } = false;
+        protected static bool Running { get; private set; } = false;
         private WebClient _webClient;
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(0);
 
         public AbstractHttpClient(WebClient webClient, FileProcess fileProcess)
         {
@@ -28,26 +27,37 @@ namespace w3botLauncher.Command
             FileProcess = fileProcess;
         }
 
-        protected void Download(string fileName)
+        protected void Reset()
+        {
+            IsFinished = false;
+            Running = false;
+        }
+
+        protected void Download(string fileName, string filePath)
         {
             try
             {
-                if (File.Exists(fileName))
+                if (FileExists(filePath))
+                {
+                    IsFinished = true;
                     return;
+                }
 
-                _webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
-                _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
-                _webClient.DownloadFileAsync(new Uri(Connection.ENDPOINT + fileName), fileName);
-                _semaphore.Wait(100);
-                Running = true;
+                Task.Run(() => 
+                {
+                    _webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
+                    _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
+
+                    if (!_webClient.IsBusy)
+                    {
+                        _webClient.DownloadFileAsync(new Uri(Connection.ENDPOINT + fileName), filePath);
+                    }
+                    Running = true;
+                });
             }
             catch (Exception e)
             {
                 throw e;
-            }
-            finally
-            {
-                this._semaphore.Dispose();
             }
         }
 

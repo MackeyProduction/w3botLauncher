@@ -35,12 +35,18 @@ namespace w3botLauncher.Command
             {
                 Status = "Downloading tessdata files...";
 
-                Download(FILE_NAME);
-
                 IsRunning = Running;
+                if (IsRunning)
+                    return;
 
-                if (IsFinished || FileExists(FILE_NAME))
+                if (IsFinished)
+                {
                     IsHandled = true;
+                    Reset();
+                    return;
+                }
+
+                Download(FILE_NAME, String.Format(@"{0}\{1}", FILE_PATH, FILE_NAME));
             }
             catch (Exception e)
             {

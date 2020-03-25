@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using w3botLauncher.Utils;
 
 namespace w3botLauncher.Command
 {
@@ -17,8 +18,7 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string CLIENT_DIRECTORY = Directory.GetCurrentDirectory() + @"\client";
-        private string CLIENT_FILE = Directory.GetCurrentDirectory() + @"\client.zip";
+        private string CLIENT_FILE = RegistryUtils.GetRegistryEntry() + @"\client.zip";
 
         public void Execute()
         {
@@ -32,9 +32,7 @@ namespace w3botLauncher.Command
                     return;
                 }
 
-                if (File.Exists(CLIENT_FILE))
-                    File.Delete(CLIENT_FILE);
-                Remove(CLIENT_DIRECTORY);
+                RemoveFile(CLIENT_FILE);
             }
             catch (Exception e)
             {

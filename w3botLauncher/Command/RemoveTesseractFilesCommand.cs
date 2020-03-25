@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using w3botLauncher.Utils;
 
 namespace w3botLauncher.Command
 {
@@ -17,8 +18,7 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string TESSERACT_DIRECTORY = Directory.GetCurrentDirectory() + @"\tessdata";
-        private string TESSERACT_FILE = Directory.GetCurrentDirectory() + @"\tessdata.zip";
+        private string TESSERACT_FILE = BotDirectories.binDir + @"\tessdata.zip";
 
         public void Execute()
         {
@@ -32,9 +32,7 @@ namespace w3botLauncher.Command
                     return;
                 }
 
-                if (File.Exists(TESSERACT_FILE))
-                    File.Delete(TESSERACT_FILE);
-                Remove(TESSERACT_DIRECTORY);
+                RemoveFile(TESSERACT_FILE);
             }
             catch (Exception e)
             {
