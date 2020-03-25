@@ -11,14 +11,14 @@ namespace w3botLauncher.Service.Factory
         {
         }
 
-        public ICommand Create(FileType fileType)
+        public ICommand Create(FileType fileType, string path)
         {
             switch (fileType)
             {
                 case FileType.Tesseract:
-                    return new ExtractTesseractFilesCommand();
+                    return new ExtractTesseractFilesCommand(path);
                 case FileType.Client:
-                    return new ExtractClientCommand();
+                    return new ExtractClientCommand(path);
                 default:
                     break;
             }

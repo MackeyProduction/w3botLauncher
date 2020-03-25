@@ -14,17 +14,20 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; }
 
-        private string SOURCE_PATH = RegistryUtils.GetRegistryEntry() + @"\client.zip";
-        private string DESTINATION_PATH = RegistryUtils.GetRegistryEntry();
+        private const string FILE_NAME = "client.zip";
+
+        public ExtractClientCommand(string path) : base(path)
+        {
+        }
 
         public void Execute()
         {
             Status = "Extracting client...";
 
-            if (IsFinished || Directory.Exists(DESTINATION_PATH))
+            if (IsFinished || Directory.Exists(DestinationPath))
                 IsHandled = true;
 
-            Decompress(SOURCE_PATH, DESTINATION_PATH);
+            Decompress(GetFullPath(DestinationPath, FILE_NAME), DestinationPath);
         }
     }
 }

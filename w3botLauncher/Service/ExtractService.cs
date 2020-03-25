@@ -18,9 +18,9 @@ namespace w3botLauncher.Service
             _extractFactory = extractFactory;
         }
 
-        public ICommand Create(FileType fileType)
+        public ICommand Create(FileType fileType, string path)
         {
-            return _extractFactory.Create(fileType);
+            return _extractFactory.Create(fileType, path);
         }
     }
 }

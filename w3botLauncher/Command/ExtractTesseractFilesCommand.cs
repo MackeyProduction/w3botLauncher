@@ -14,17 +14,20 @@ namespace w3botLauncher.Command
         public bool IsHandled { get; set; }
         public bool IsRunning { get; set; } = false;
 
-        private string SOURCE_PATH = BotDirectories.binDir + @"\tessdata.zip";
-        private string DESTINATION_PATH = BotDirectories.binDir;
+        private const string FILE_NAME = "tessdata.zip";
+
+        public ExtractTesseractFilesCommand(string path) : base(path)
+        {
+        }
 
         public void Execute()
         {
             Status = "Extracting tesseract files...";
 
-            if (IsFinished || Directory.Exists(DESTINATION_PATH))
+            if (IsFinished || Directory.Exists(DestinationPath))
                 IsHandled = true;
 
-            Decompress(SOURCE_PATH, DESTINATION_PATH);
+            Decompress(GetFullPath(DestinationPath, FILE_NAME), DestinationPath);
         }
     }
 }
